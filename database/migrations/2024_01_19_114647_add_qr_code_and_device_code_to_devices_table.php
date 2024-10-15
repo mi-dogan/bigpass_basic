@@ -1,0 +1,30 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('devices', function (Blueprint $table) {
+            $table->string("qr_code")->nullable()->after('device_id');
+            $table->string("device_code")->nullable()->after('qr_code');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('devices', function (Blueprint $table) {
+            $table->dropColumn('qr_code');
+            $table->dropColumn('device_code');
+        });
+    }
+};

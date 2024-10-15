@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('employees', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('degree');
+            $table->string('email');
+            $table->string('phone');
+            $table->string('profile_image')->nullable();
+            $table->foreignId('position_id')->constrained();
+            $table->foreignId('department_id')->constrained();
+            $table->unsignedBigInteger('shift_id')->nullable();
+            $table->unsignedBigInteger('shift_group_id')->nullable();
+            $table->softDeletes();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('employees');
+    }
+};
