@@ -530,6 +530,23 @@
                             </div>
                         </div>
                         <div class="separator my-2"></div>
+                        @php
+                        use Carbon\Carbon;
+                        if(auth()->user()->company_id != "0"){
+                        $currentCompany = Companys::query()->where('id',auth()->user()->company_id)->first();
+                        $startDate = Carbon::now(); 
+                        $endDate = Carbon::parse($currentCompany->licence_end_date); 
+                        $remainingTime = $endDate->diffForHumans($startDate);  
+                        }
+            
+                        @endphp
+                        @if(auth()->user()->company_id != "0")
+                    <div class="text-center h5">
+                        <div class="">Lisans Bitiş Tarihi: </div>
+                        <div class="text-dark mb-0">{{$currentCompany->licence_end_date}} - {{$remainingTime}}</div>
+                    </div>
+                    <div class="separator my-2"></div>
+                        @endif
                         <div class="menu-item px-5">
                             <a href="{{route('profile')}}" class="menu-link px-5">
                                 <span class="menu-icon">
@@ -580,13 +597,13 @@
         </div>
     </div>
     </div>
-    <div class="app-wrapper flex-column flex-row-fluid" id="kt_app_wrapper">
+    <div class="app-wrapper flex-column flex-row-fluid " id="kt_app_wrapper">
         <div id="kt_app_sidebar" class="app-sidebar flex-column" data-kt-drawer="true" data-kt-drawer-name="app-sidebar" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="225px" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_app_sidebar_mobile_toggle">
-            <div class="app-sidebar-logo px-8 shadow" id="kt_app_sidebar_logo">
-                <a href="{{route('dashboard')}}">
-                    <img alt="Logo" src="{{asset('backend/media/logos/mihmandar-vector.png')}}" class="h-45px app-sidebar-logo-default">
-                    <img alt="Logo" src="{{asset('backend/media/logos/mihmandar-vector.png')}}" class="h-35px app-sidebar-logo-minimize">
-                    <span class="text-white">MİHMANDAR</span>
+            <div class="app-sidebar-logo px-8" id="kt_app_sidebar_logo">
+                <a href="{{route('dashboard')}}" >
+                    <img alt="Logo" src="{{asset('backend/media/logos/bigpass-logo-removebg-preview.png')}}" class="h-70px app-sidebar-logo-default">
+                    <img alt="Logo" src="{{asset('backend/media/logos/bigpass-bg-logo.png')}}" class="h-10px app-sidebar-logo-minimize">
+                    {{-- <span class="text-white">MİHMANDAR</span> --}}
                 </a>
                 <div id="kt_app_sidebar_toggle" class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary body-bg h-30px w-30px position-absolute top-50 start-100 translate-middle rotate" data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body" data-kt-toggle-name="app-sidebar-minimize">
                     <span class="svg-icon svg-icon-2 rotate-180">
@@ -597,20 +614,9 @@
                     </span>
                 </div>
             </div>
-            @php
-            use Carbon\Carbon;
-            if(auth()->user()->company_id != "0"){
-            $currentCompany = Companys::query()->where('id',auth()->user()->company_id)->first();
-            $startDate = Carbon::now(); 
-            $endDate = Carbon::parse($currentCompany->licence_end_date); 
-            $remainingTime = $endDate->diffForHumans($startDate);  
-            }
 
-            @endphp
-            @if(auth()->user()->company_id != "0")
-            <div class="text-light d-flex justify-content-center align-items-end h4 pt-2 mb-0 text-center ms-5 me-5">{{$currentCompany->licence_end_date}} - {{$remainingTime}}</div>
-            @endif
             <div class="app-sidebar-menu overflow-hidden flex-column-fluid">
+                
                 <div id="kt_app_sidebar_menu_wrapper" class="app-sidebar-wrapper hover-scroll-overlay-y my-5" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="#kt_app_sidebar_logo, #kt_app_sidebar_footer" data-kt-scroll-wrappers="#kt_app_sidebar_menu" data-kt-scroll-offset="5px" data-kt-scroll-save-state="true">
                     <div class="menu menu-column menu-rounded menu-sub-indention px-3" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
                         <div class="menu-item">
@@ -643,7 +649,7 @@
                             </a>
                         </div>
                         @endif
-                        {{-- @role('superadmin') --}}
+                        @role('admin|superadmin|Firma Yetkilisi')
                         <div class="menu-item">
                             <a class="menu-link {{request()->segment(2) == 'subeler' ? 'active' : ''}}" href="{{route('subeler.index')}}">
                                 <span class="menu-icon">
@@ -689,7 +695,22 @@
                                 <span class="menu-title fw-bold fs-6">Pozisyonlar</span>
                             </a>
                         </div>
-                        {{-- @endrole --}}
+                        @endrole
+                        
+                        @role('admin|superadmin|Firma Yetkilisi')
+                        <div class="menu-item">
+                            <a class="menu-link {{request()->segment(2) == 'vardiyalar' ? 'active' : ''}}" href="{{route('vardiyalar.index')}}">
+                                <span class="menu-icon">
+                                    <span class="svg-icon svg-icon-2">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M13 5.91517C15.8 6.41517 18 8.81519 18 11.8152C18 12.5152 17.9 13.2152 17.6 13.9152L20.1 15.3152C20.6 15.6152 21.4 15.4152 21.6 14.8152C21.9 13.9152 22.1 12.9152 22.1 11.8152C22.1 7.01519 18.8 3.11521 14.3 2.01521C13.7 1.91521 13.1 2.31521 13.1 3.01521V5.91517H13Z" fill="currentColor" />
+                                            <path opacity="0.3" d="M19.1 17.0152C19.7 17.3152 19.8 18.1152 19.3 18.5152C17.5 20.5152 14.9 21.7152 12 21.7152C9.1 21.7152 6.50001 20.5152 4.70001 18.5152C4.30001 18.0152 4.39999 17.3152 4.89999 17.0152L7.39999 15.6152C8.49999 16.9152 10.2 17.8152 12 17.8152C13.8 17.8152 15.5 17.0152 16.6 15.6152L19.1 17.0152ZM6.39999 13.9151C6.19999 13.2151 6 12.5152 6 11.8152C6 8.81517 8.2 6.41515 11 5.91515V3.01519C11 2.41519 10.4 1.91519 9.79999 2.01519C5.29999 3.01519 2 7.01517 2 11.8152C2 12.8152 2.2 13.8152 2.5 14.8152C2.7 15.4152 3.4 15.7152 4 15.3152L6.39999 13.9151Z" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                </span>
+                                <span class="menu-title fw-bold fs-6">Vardiyalar</span>
+                            </a>
+                        </div>
                         <div class="menu-item">
                             <a class="menu-link {{request()->segment(2) == 'calisanlar' ? 'active' : ''}}" href="{{route('calisanlar.index')}}">
                                 <span class="menu-icon">
@@ -705,21 +726,39 @@
                                 <span class="menu-title fw-bold fs-6">Çalışanlar</span>
                             </a>
                         </div>
-                        {{-- @role('superadmin') --}}
-                        <div class="menu-item">
-                            <a class="menu-link {{request()->segment(2) == 'vardiyalar' ? 'active' : ''}}" href="{{route('vardiyalar.index')}}">
+                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{in_array(request()->segment(2), ['raporlar','pdks-activity']) ? 'show' : ''}}">
+                            <span class="menu-link">
                                 <span class="menu-icon">
                                     <span class="svg-icon svg-icon-2">
-                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13 5.91517C15.8 6.41517 18 8.81519 18 11.8152C18 12.5152 17.9 13.2152 17.6 13.9152L20.1 15.3152C20.6 15.6152 21.4 15.4152 21.6 14.8152C21.9 13.9152 22.1 12.9152 22.1 11.8152C22.1 7.01519 18.8 3.11521 14.3 2.01521C13.7 1.91521 13.1 2.31521 13.1 3.01521V5.91517H13Z" fill="currentColor" />
-                                            <path opacity="0.3" d="M19.1 17.0152C19.7 17.3152 19.8 18.1152 19.3 18.5152C17.5 20.5152 14.9 21.7152 12 21.7152C9.1 21.7152 6.50001 20.5152 4.70001 18.5152C4.30001 18.0152 4.39999 17.3152 4.89999 17.0152L7.39999 15.6152C8.49999 16.9152 10.2 17.8152 12 17.8152C13.8 17.8152 15.5 17.0152 16.6 15.6152L19.1 17.0152ZM6.39999 13.9151C6.19999 13.2151 6 12.5152 6 11.8152C6 8.81517 8.2 6.41515 11 5.91515V3.01519C11 2.41519 10.4 1.91519 9.79999 2.01519C5.29999 3.01519 2 7.01517 2 11.8152C2 12.8152 2.2 13.8152 2.5 14.8152C2.7 15.4152 3.4 15.7152 4 15.3152L6.39999 13.9151Z" fill="currentColor" />
-                                        </svg>
+                                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                           <rect x="8" y="9" width="3" height="10" rx="1.5" fill="currentColor" />
+                                           <rect opacity="0.5" x="13" y="5" width="3" height="14" rx="1.5" fill="currentColor" />
+                                           <rect x="18" y="11" width="3" height="8" rx="1.5" fill="currentColor" />
+                                           <rect x="3" y="13" width="3" height="6" rx="1.5" fill="currentColor" />
+                                       </svg>
                                     </span>
                                 </span>
-                                <span class="menu-title fw-bold fs-6">Vardiyalar</span>
-                            </a>
+                                <span class="menu-title fw-bold fs-6">Raporlar</span>
+                                <span class="menu-arrow"></span>
+                            </span>
+                            <div class="menu-sub menu-sub-accordion">
+                                <div class="menu-item">
+                                   <a class="menu-link {{request()->segment(2) == 'raporlar' ? 'active' : ''}}" href="{{route('raporlar.index')}}">
+                                       <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                       </span>
+                                       <span class="menu-title">Geçiş Noktaları</span>
+                                   </a>
+                                    <a class="menu-link {{request()->segment(2) == 'pdks-activity' ? 'active' : ''}}" href="{{route('pdks-activity.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">PDKS</span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="menu-item">
+                        {{-- <div class="menu-item">
                             <a class="menu-link {{request()->segment(2) == 'kullanicilar' ? 'active' : ''}}" href="{{route('kullanicilar.index')}}">
                                 <span class="menu-icon">
                                     <span class="svg-icon svg-icon-2">
@@ -731,8 +770,9 @@
                                 </span>
                                 <span class="menu-title fw-bold fs-6">Kullanıcılar</span>
                             </a>
-                        </div>
-                        {{-- @endrole --}}
+                        </div> --}}
+                        @endrole
+                        @role('admin|superadmin|Firma Yetkilisi')
                          <div class="menu-item">
                              <a class="menu-link {{request()->segment(2) == 'izinler' ? 'active' : ''}}" href="{{route('izinler.index')}}">
                                  <span class="menu-icon">
@@ -746,7 +786,21 @@
                                  <span class="menu-title fw-bold fs-6">İzinler</span>
                              </a>
                          </div>
-                          <div class="menu-item">
+                         <div class="menu-item">
+
+                             <a class="menu-link {{request()->segment(2) == 'tatiller' ? 'active' : ''}}" href="{{route('tatiller.index')}}">
+                                <span class="menu-icon">
+                                    <span class="svg-icon svg-icon-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-calendar-week-fill" viewBox="0 0 19 19">
+                                            <path d="M4 .5a.5.5 0 0 0-1 0V1H2a2 2 0 0 0-2 2v1h16V3a2 2 0 0 0-2-2h-1V.5a.5.5 0 0 0-1 0V1H4zM16 14V5H0v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2M9.5 7h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5m3 0h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5M2 10.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5"/>
+                                          </svg>
+                                    </span>
+                                </span>
+                                <span class="menu-title fw-bold fs-6">Resmi Tatiller</span>
+                            </a>
+                         </div>
+                         @endrole
+                          {{-- <div class="menu-item">
                               <a class="menu-link {{request()->segment(2) == 'raporlar' ? 'active' : ''}}" href="{{route('raporlar.index')}}">
                                   <span class="menu-icon">
                                       <span class="svg-icon svg-icon-2">
@@ -760,8 +814,9 @@
                                   </span>
                                   <span class="menu-title fw-bold fs-6">Raporlar</span>
                               </a>
-                          </div>
-                        <div class="menu-item">
+                          </div> --}}
+
+                        {{-- <div class="menu-item">
                             <a class="menu-link {{request()->segment(2) == 'hata-listesi' ? 'active' : ''}}" href="{{route('hata-listesi.index')}}">
                                   <span class="menu-icon">
                                       <span class="svg-icon svg-icon-2">
@@ -776,7 +831,7 @@
                                   </span>
                                 <span class="menu-title fw-bold fs-6">Hata Listesi</span>
                             </a>
-                        </div>
+                        </div> --}}
                           {{-- <div class="menu-item">
                               <a class="menu-link {{request()->segment(2) == 'takvim' ? 'active' : ''}}" href="{{route('takvim.index')}}">
                                   <span class="menu-icon">
@@ -786,45 +841,55 @@
                                              <path d="M6 6C5.4 6 5 5.6 5 5V3C5 2.4 5.4 2 6 2C6.6 2 7 2.4 7 3V5C7 5.6 6.6 6 6 6ZM11 5V3C11 2.4 10.6 2 10 2C9.4 2 9 2.4 9 3V5C9 5.6 9.4 6 10 6C10.6 6 11 5.6 11 5ZM15 5V3C15 2.4 14.6 2 14 2C13.4 2 13 2.4 13 3V5C13 5.6 13.4 6 14 6C14.6 6 15 5.6 15 5ZM19 5V3C19 2.4 18.6 2 18 2C17.4 2 17 2.4 17 3V5C17 5.6 17.4 6 18 6C18.6 6 19 5.6 19 5Z" fill="currentColor" />
                                              <path d="M8.8 13.1C9.2 13.1 9.5 13 9.7 12.8C9.9 12.6 10.1 12.3 10.1 11.9C10.1 11.6 10 11.3 9.8 11.1C9.6 10.9 9.3 10.8 9 10.8C8.8 10.8 8.59999 10.8 8.39999 10.9C8.19999 11 8.1 11.1 8 11.2C7.9 11.3 7.8 11.4 7.7 11.6C7.6 11.8 7.5 11.9 7.5 12.1C7.5 12.2 7.4 12.2 7.3 12.3C7.2 12.4 7.09999 12.4 6.89999 12.4C6.69999 12.4 6.6 12.3 6.5 12.2C6.4 12.1 6.3 11.9 6.3 11.7C6.3 11.5 6.4 11.3 6.5 11.1C6.6 10.9 6.8 10.7 7 10.5C7.2 10.3 7.49999 10.1 7.89999 10C8.29999 9.90003 8.60001 9.80003 9.10001 9.80003C9.50001 9.80003 9.80001 9.90003 10.1 10C10.4 10.1 10.7 10.3 10.9 10.4C11.1 10.5 11.3 10.8 11.4 11.1C11.5 11.4 11.6 11.6 11.6 11.9C11.6 12.3 11.5 12.6 11.3 12.9C11.1 13.2 10.9 13.5 10.6 13.7C10.9 13.9 11.2 14.1 11.4 14.3C11.6 14.5 11.8 14.7 11.9 15C12 15.3 12.1 15.5 12.1 15.8C12.1 16.2 12 16.5 11.9 16.8C11.8 17.1 11.5 17.4 11.3 17.7C11.1 18 10.7 18.2 10.3 18.3C9.9 18.4 9.5 18.5 9 18.5C8.5 18.5 8.1 18.4 7.7 18.2C7.3 18 7 17.8 6.8 17.6C6.6 17.4 6.4 17.1 6.3 16.8C6.2 16.5 6.10001 16.3 6.10001 16.1C6.10001 15.9 6.2 15.7 6.3 15.6C6.4 15.5 6.6 15.4 6.8 15.4C6.9 15.4 7.00001 15.4 7.10001 15.5C7.20001 15.6 7.3 15.6 7.3 15.7C7.5 16.2 7.7 16.6 8 16.9C8.3 17.2 8.6 17.3 9 17.3C9.2 17.3 9.5 17.2 9.7 17.1C9.9 17 10.1 16.8 10.3 16.6C10.5 16.4 10.5 16.1 10.5 15.8C10.5 15.3 10.4 15 10.1 14.7C9.80001 14.4 9.50001 14.3 9.10001 14.3C9.00001 14.3 8.9 14.3 8.7 14.3C8.5 14.3 8.39999 14.3 8.39999 14.3C8.19999 14.3 7.99999 14.2 7.89999 14.1C7.79999 14 7.7 13.8 7.7 13.7C7.7 13.5 7.79999 13.4 7.89999 13.2C7.99999 13 8.2 13 8.5 13H8.8V13.1ZM15.3 17.5V12.2C14.3 13 13.6 13.3 13.3 13.3C13.1 13.3 13 13.2 12.9 13.1C12.8 13 12.7 12.8 12.7 12.6C12.7 12.4 12.8 12.3 12.9 12.2C13 12.1 13.2 12 13.6 11.8C14.1 11.6 14.5 11.3 14.7 11.1C14.9 10.9 15.2 10.6 15.5 10.3C15.8 10 15.9 9.80003 15.9 9.70003C15.9 9.60003 16.1 9.60004 16.3 9.60004C16.5 9.60004 16.7 9.70003 16.8 9.80003C16.9 9.90003 17 10.2 17 10.5V17.2C17 18 16.7 18.4 16.2 18.4C16 18.4 15.8 18.3 15.6 18.2C15.4 18.1 15.3 17.8 15.3 17.5Z" fill="currentColor" />
                                          </svg>
-                                      </span>
-                                  </span>
-                                  <span class="menu-title fw-bold fs-6">Takvim &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="badge badge-primary">yakında</span></span>
-                              </a>
-                          </div> --}} 
-                           {{-- @role('superadmin') --}}
-                           @if(auth()->user()->company_id == "0")
-                           <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{in_array(request()->segment(2), ['tatiller','cihazlar']) ? 'show' : ''}}">
-                               <span class="menu-link">
-                                   <span class="menu-icon">
-                                       <span class="svg-icon svg-icon-2">
-                                           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                               <path opacity="0.3" d="M22.0318 8.59998C22.0318 10.4 21.4318 12.2 20.0318 13.5C18.4318 15.1 16.3318 15.7 14.2318 15.4C13.3318 15.3 12.3318 15.6 11.7318 16.3L6.93177 21.1C5.73177 22.3 3.83179 22.2 2.73179 21C1.63179 19.8 1.83177 18 2.93177 16.9L7.53178 12.3C8.23178 11.6 8.53177 10.7 8.43177 9.80005C8.13177 7.80005 8.73176 5.6 10.3318 4C11.7318 2.6 13.5318 2 15.2318 2C16.1318 2 16.6318 3.20005 15.9318 3.80005L13.0318 6.70007C12.5318 7.20007 12.4318 7.9 12.7318 8.5C13.3318 9.7 14.2318 10.6001 15.4318 11.2001C16.0318 11.5001 16.7318 11.3 17.2318 10.9L20.1318 8C20.8318 7.2 22.0318 7.59998 22.0318 8.59998Z" fill="currentColor" />
-                                               <path d="M4.23179 19.7C3.83179 19.3 3.83179 18.7 4.23179 18.3L9.73179 12.8C10.1318 12.4 10.7318 12.4 11.1318 12.8C11.5318 13.2 11.5318 13.8 11.1318 14.2L5.63179 19.7C5.23179 20.1 4.53179 20.1 4.23179 19.7Z" fill="currentColor" />
-                                           </svg>
-                                       </span>
-                                   </span>
-                                   <span class="menu-title fw-bold fs-6">Sistem Ayarları</span>
-                                   <span class="menu-arrow"></span>
-                               </span>
-                               <div class="menu-sub menu-sub-accordion">
-                                   <div class="menu-item">
-                                      <a class="menu-link {{request()->segment(2) == 'cihazlar' ? 'active' : ''}}" href="{{route('cihazlar.index')}}">
-                                          <span class="menu-bullet">
-                                               <span class="bullet bullet-dot"></span>
-                                          </span>
-                                          <span class="menu-title">Cihazlar</span>
-                                      </a>
-                                       <a class="menu-link {{request()->segment(2) == 'tatiller' ? 'active' : ''}}" href="{{route('tatiller.index')}}">
-                                           <span class="menu-bullet">
-                                               <span class="bullet bullet-dot"></span>
-                                           </span>
-                                           <span class="menu-title">Resmi Tatiller</span>
-                                       </a>
+                                        </span>
+                                    </span>
+                                    <span class="menu-title fw-bold fs-6">Takvim &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="badge badge-primary">yakında</span></span>
+                                </a>
+                            </div> --}} 
+                            @role('admin|superadmin|Firma Yetkilisi')
+                            <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{in_array(request()->segment(2), ['tatiller','cihazlar']) ? 'show' : ''}}">
+                                <span class="menu-link">
+                                    <span class="menu-icon">
+                                        <span class="svg-icon svg-icon-2">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path opacity="0.3" d="M22.0318 8.59998C22.0318 10.4 21.4318 12.2 20.0318 13.5C18.4318 15.1 16.3318 15.7 14.2318 15.4C13.3318 15.3 12.3318 15.6 11.7318 16.3L6.93177 21.1C5.73177 22.3 3.83179 22.2 2.73179 21C1.63179 19.8 1.83177 18 2.93177 16.9L7.53178 12.3C8.23178 11.6 8.53177 10.7 8.43177 9.80005C8.13177 7.80005 8.73176 5.6 10.3318 4C11.7318 2.6 13.5318 2 15.2318 2C16.1318 2 16.6318 3.20005 15.9318 3.80005L13.0318 6.70007C12.5318 7.20007 12.4318 7.9 12.7318 8.5C13.3318 9.7 14.2318 10.6001 15.4318 11.2001C16.0318 11.5001 16.7318 11.3 17.2318 10.9L20.1318 8C20.8318 7.2 22.0318 7.59998 22.0318 8.59998Z" fill="currentColor" />
+                                                <path d="M4.23179 19.7C3.83179 19.3 3.83179 18.7 4.23179 18.3L9.73179 12.8C10.1318 12.4 10.7318 12.4 11.1318 12.8C11.5318 13.2 11.5318 13.8 11.1318 14.2L5.63179 19.7C5.23179 20.1 4.53179 20.1 4.23179 19.7Z" fill="currentColor" />
+                                            </svg>
+                                        </span>
+                                    </span>
+                                    <span class="menu-title fw-bold fs-6">Sistem Ayarları</span>
+                                    <span class="menu-arrow"></span>
+                                </span>
+                                <div class="menu-sub menu-sub-accordion">
+                                    @if(auth()->user()->email == "admin@admin.com")
+                                    <div class="menu-item">
+                                        <a class="menu-link {{request()->segment(2) == 'cihazlar' ? 'active' : ''}}" href="{{route('cihazlar.index')}}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title">Cihazlar</span>
+                                        </a>
+                                    </div>
+                                    @endif
+                                    <div class="menu-item">
+                                        <a class="menu-link {{request()->segment(2) == 'kullanicilar' ? 'active' : ''}}" href="{{route('kullanicilar.index')}}">
+                                            <span class="menu-bullet">
+                                                <span class="bullet bullet-dot"></span>
+                                            </span>
+                                            <span class="menu-title ">Kullanıcılar</span>
+                                        </a>
                                    </div>
+                                   <div class="menu-item">
+                                    <a class="menu-link {{request()->segment(2) == 'hata-listesi' ? 'active' : ''}}" href="{{route('hata-listesi.index')}}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                                        <span class="menu-title">Hata Listesi</span>
+                                    </a>
+                                </div>
                                </div>
                            </div>
-                           @endif
-                           {{-- @endrole --}}
+                           @endrole
                     </div>
                 </div>
             </div>
@@ -846,7 +911,6 @@
 @section('js')
 <script>
     function updateCompanyId(companyId) {
-        console.log(companyId);
         $.ajax({
             url: '{{ route("companys.updateCompanyId", ":id") }}'.replace(':id', companyId),
             type: 'PUT',

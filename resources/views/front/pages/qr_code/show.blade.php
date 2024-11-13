@@ -40,12 +40,12 @@
                             type: "post",
                             url: Ajaxurl,
                             data: {
-                                device_id: {{ $device?->device_id }},
+                                device_id: @json($device?->device_id),
+                                // {{ $device?->device_id }}
                                 employee_id: {{ $employee->id }},
                                 request_type: "qr"
                             },
                             success: function (response) {
-                                console.log(response)
                                 if(response.status){
                                     $('.alert-result').addClass('alert-success').html(response.message);
                                 }else{
@@ -53,7 +53,6 @@
                                 }
                             },
                             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                                console.log(XMLHttpRequest.responseJSON.message)
                                 $('.alert-result').addClass('alert-danger').html(XMLHttpRequest.responseJSON.message);
                             }
                         });

@@ -18,5 +18,7 @@ use Illuminate\Support\Facades\Log;
 |
 */
 
-Route::post('/activity',[ActivityController::class,'store']);
-Route::post('/generate-random-qr-code',[QrcodeController::class,'generateRandom']);
+Route::post('/activity', [ActivityController::class, 'store']);
+Route::post('/activity-multi', [ActivityController::class, 'storeMultiple']);
+Route::post('/generate-random-qr-code', [QrcodeController::class, 'generateRandom']);
+Route::get('/getEmployees/{id}',[ActivityController::class,'getEmployeesFromDeviceId']);

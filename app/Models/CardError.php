@@ -11,4 +11,9 @@ class CardError extends Model
     use SoftDeletes, HasFactory;
 
     protected $guarded = [];
+
+    public function scopeByCompany($query)
+    {
+        return $query->where('company_id', auth()->user()->company_id);
+    }
 }

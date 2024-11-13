@@ -36,28 +36,39 @@ class PositionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->id;
         $companyId = auth()->user()->company_id;
-        $PositionCount = Position::where('company_id', $companyId)->count();
-        $currentCompany = Companys::query()->where('id', $companyId)->first();
-        $PositionLimit = $currentCompany->position_limit;
-        if ($PositionLimit == 0) {
+        if ($companyId == 0) {
             $position = Position::query()->where('id', $id)->first();
             return response()->json([
-                // 'company_id' => auth()->user()->company_id,
-                'position' => $position
-            ], 200);
-        } else if ($PositionCount >= $PositionLimit) {
-            return response()->json(['limitReached' => true], 200);
-        } else {
-            $position = Position::query()->where('id', $id)->first();
-            return response()->json([
-                // 'company_id' => auth()->user()->company_id,
                 'position' => $position
             ], 200);
         }
-
+        $positionCount = Position::where('company_id', $companyId)->count();
+        $currentCompany = Companys::query()->where('id', $companyId)->first();
+        $positionLimit = $currentCompany->position_limit;
+        if ($positionLimit == 0) {
+            $position = Position::query()->where('id', $id)->first();
+            return response()->json([
+                'position' => $position
+            ], 200);
+        } else if ($positionCount >= $positionLimit) {
+            if ($request->method == 'edit') {
+                $position = Position::query()->where('id', $id)->first();
+                return response()->json([
+                    'position' => $position
+                ], 200);
+            } else {
+                return response()->json(['limitReached' => true], 200);
+            }
+        } else {
+            $position = Position::query()->where('id', $id)->first();
+            return response()->json([
+                'position' => $position
+            ], 200);
+        }
     }
 
     /**

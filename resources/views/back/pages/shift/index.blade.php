@@ -2,6 +2,7 @@
 @section('title','Vardiya Yönetimi')
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
+    @role('admin|superadmin|Firma Yetkilisi')
     <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
         <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
             <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -88,7 +89,7 @@
                 <div class="card-body">
                     <table class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll" id="kt_datatable_example">
                         <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-capitalized bg-light w-100 px-0 mx-0"style="font-size: 15px;">
                                   <th class="text-start px-md-12 px-6 w-25">Vardiya</th>
                                   <th class="text-start px-md-12 px-6 w-25">Durum</th>
                                   <th class="text-start px-md-12 px-6 w-25">Çalışan</th>
@@ -96,9 +97,9 @@
                                   <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-semibold text-gray-600">
+                        <tbody class="fw-semibold text-gray-900">
 							 @foreach ($shifts as $shift)
-                                 <tr>
+                                 <tr style="font-size: 13px;">
                                      <td class="text-start px-md-12 px-6 py-6">
                                         <a class="text-dark" href="{{route('gunler.index',$shift->id)}}"> {{ str()->limit($shift->name,50) }}</a>
                                      </td>
@@ -154,6 +155,7 @@
             </div>
         </div>
     </div>
+    @endrole
 </div>
 <div class="modal fade draggable" id="kt_modal_create_shift" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -439,7 +441,7 @@
          $.ajax({
             type: "get",
             url: Ajaxurl,
-            data: {id: id},
+            data: {id: id,method:"edit"},
             success: function (response) {
                 var html = '';
                 response.employees.forEach(employee => {
@@ -495,7 +497,6 @@
       url: "{{ route('vardiyalar.show') }}",
       method: "GET",
       success: function (response) {
-        console.log(response)
         if (response.limitReached) {
           Swal.fire({
               title: "Maximum Limite Ulaşıldı",

@@ -33329,7 +33329,7 @@ i[class^=fonticon-]:before, i[class*=" fonticon-"]:before {
   --bs-prismjs-btn-bg: #2d2d5e;
   --bs-prismjs-btn-bg-hover: #2d2d5e;
   --bs-prismjs-btn-color: rgba(255, 255, 255, 0.75);
-  --bs-prismjs-btn-color-hover: #009ef7;
+  --bs-prismjs-btn-color-hover: #336d5e;
   --bs-prismjs-scrollbar-color: #323268;
   --bs-prismjs-scrollbar-color-hover: #373773;
 }
@@ -33340,7 +33340,7 @@ i[class^=fonticon-]:before, i[class*=" fonticon-"]:before {
   --bs-prismjs-btn-bg: #27273d;
   --bs-prismjs-btn-bg-hover: #27273d;
   --bs-prismjs-btn-color: rgba(255, 255, 255, 0.75);
-  --bs-prismjs-btn-color-hover: #009ef7;
+  --bs-prismjs-btn-color-hover: #336d5e;
   --bs-prismjs-scrollbar-color: #2d2d46;
   --bs-prismjs-scrollbar-color-hover: #333350;
 }
@@ -34653,7 +34653,7 @@ table.dataTable.dtr-column.collapsed > tbody > tr.parent > th.dtr-control:before
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-position: center;
-  background-color: #009ef7;
+  background-color: #336d5e;
   -webkit-mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3e%3crect opacity='0.3' x='2' y='2' width='20' height='20' rx='5' fill='%23009ef7'/%3e%3crect x='6.0104' y='10.9247' width='12' height='2' rx='1' fill='%23009ef7'/%3e%3c/svg%3e");
   mask-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3e%3crect opacity='0.3' x='2' y='2' width='20' height='20' rx='5' fill='%23009ef7'/%3e%3crect x='6.0104' y='10.9247' width='12' height='2' rx='1' fill='%23009ef7'/%3e%3c/svg%3e");
 }

@@ -2,7 +2,8 @@
 @section('title','Tatil Yönetimi')
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
-    @if(auth()->user()->company_id == "0")
+    @role('admin|superadmin|Firma Yetkilisi')
+    {{-- @if(auth()->user()->company_id == "0") --}}
     <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
         <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
             <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -89,15 +90,15 @@
                 <div class="card-body">
                     <table class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll" id="kt_datatable_example">
                         <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-capitalized bg-light w-100 px-0 mx-0"style="font-size: 15px;">
                                   <th class="text-start px-md-12 px-6 w-25">Tatil</th>
                                   <th class="text-center px-md-12 px-6 w-25">Tarih</th>
                                   <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-semibold text-gray-600">
+                        <tbody class="fw-semibold text-gray-900">
 							 @foreach ($holidays as $holiday)
-								<tr>
+								<tr style="font-size: 13px;">
 								    <td class="text-start px-md-12 px-6 py-6">
 								       {{ str()->limit($holiday->name,50) }}
 								    </td>
@@ -135,9 +136,10 @@
             </div>
         </div>
     </div>
-    @endif
+    {{-- @endif --}}
+    @endrole
 </div>
-@if(auth()->user()->company_id == "0")
+{{-- @if(auth()->user()->company_id == "0") --}}
 <div class="modal fade draggable" id="kt_modal_create_holiday" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered mw-500px">
         <div class="modal-content">
@@ -227,7 +229,7 @@
         </div>
     </div>
 </div>
-@endif
+{{-- @endif --}}
 @endsection
 @section('js')
 <script src="{{asset('backend/js/datatable.js')}}"></script>

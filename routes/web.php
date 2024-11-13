@@ -23,6 +23,8 @@ use App\Http\Controllers\Back\ShiftController;
 use App\Http\Controllers\Back\ShiftDayController;
 use App\Http\Controllers\Back\UserController;
 use App\Http\Controllers\CompanysController;
+use App\Http\Controllers\PdksController;
+use App\Models\pdks_entrances;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,7 +50,7 @@ Route::middleware('guest:web')->group(function () {
     Route::get('/sifreyi/dogrula/{email}', [ResetPasswordController::class, 'password_send'])->name('password.send');
 });
 
-Route::middleware(['auth', 'unverified'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'unverified'])->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)->name('verification.notice');
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1'])->name('verification.verify');
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1')->name('verification.send');
@@ -65,7 +67,7 @@ Route::middleware(['auth', 'unverified'])->prefix('admin')->group(function () {
 
         Route::resource('departmanlar', DepartmentController::class);
         Route::get('departmanlar/{id}/delete', [DepartmentController::class, 'destroy'])->name('departmanlar.delete');
-        Route::get('departmanlar/show', [DepartmentController::class, 'show'])->name('departmanlar.show');
+        Route::get('depatmanlar/show', [DepartmentController::class, 'show'])->name('depatmanlar.show');
 
         Route::resource('subeler', BranchController::class);
         Route::get('subeler/{id}/delete', [BranchController::class, 'destroy'])->name('subeler.delete');
@@ -108,6 +110,7 @@ Route::middleware(['auth', 'unverified'])->prefix('admin')->group(function () {
         Route::post('qr-code/generate', [QrcodeController::class, 'generate'])->name('qr-code.generate');
 
         Route::resource('raporlar', ActivityController::class);
+        Route::resource('pdks-activity', PdksController::class);
 
         Route::resource('takvim', CalendarController::class);
 
@@ -128,7 +131,6 @@ Route::prefix("qr")->name("qr.")->group(function () {
     Route::middleware('auth:employee')->group(function () {
         Route::get('/', [QrcodeController::class, 'showQrPage'])->name('home');
         Route::get('/{qrCode}/show', [QrcodeController::class, 'showQrPage'])->name('show');
-        //        Route::get('/{deviceCode}', [QrcodeController::class, 'showQrPage'])->name('show');
     });
     Route::get('/cikis', [\App\Http\Controllers\AuthEmployee\EmployeeLoginController::class, 'logout'])->name('logout');
 });

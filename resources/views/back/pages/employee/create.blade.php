@@ -2,6 +2,7 @@
 @section('title','Çalışan Ekle')
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
+    @role('admin|superadmin|Firma Yetkilisi')
     <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
         <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
             <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -25,28 +26,27 @@
             <div class="card card-bordered h-lg-100" id="kt_contacts_main">
                 <div class="card-header">
                     <div class="card-title m-0">
-                        <h3 class="fw-bolder m-0">Çalışan Ekle
-                            <div class="fs-8 text-gray-600 mt-1">Sisteme bu bölümden çalışan ekleyebilirsiniz.</div>
-                        </h3>
+                        <h1 class="fw-bolder m-0">Çalışan Ekle
+                            <div class="fs-7 text-gray-600 mt-1">Sisteme bu bölümden çalışan ekleyebilirsiniz.</div>
+                        </h1>
                     </div>
                 </div>
                 <div class="card-body pt-5">
                     <form method="POST" class="form fv-plugins-bootstrap5 fv-plugins-framework" enctype="multipart/form-data" action="{{route('calisanlar.store')}}">
                         @csrf
-                        <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url({{asset('backend/media/svg/avatars/blank.svg')}})">
+                        {{-- <div class="image-input image-input-outline" data-kt-image-input="true" style="background-image: url({{asset('backend/media/svg/avatars/blank.svg')}})">
                             <div class="image-input-wrapper w-100px h-100px object-fit-cover" style="background-image: url({{asset('backend/media/svg/avatars/blank.svg')}})"></div>
                             <label class="btn btn-icon btn-circle btn-active-color-primary w-25px h-25px bg-body shadow" data-kt-image-input-action="change" data-bs-toggle="tooltip" title="Avatar'ı Değiştir">
                                 <i class="bi bi-pencil-fill fs-7"></i>
                                 <input type="file" name="profile_image" accept=".png, .jpg, .jpeg" />
                                 <input type="hidden" name="avatar_remove" />
                             </label>
-                        </div>
+                        </div> --}}
                         <div class="row row-cols-1 row-cols-sm-2 rol-cols-md-1 row-cols-lg-2">
                             <div class="col">
                                 <div class="fv-row mb-7 fv-plugins-icon-container">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Ad Soyad</span>
-                                        <i class="ki-duotone ki-information fs-7">
                                     </label>
                                     <input type="text" class="form-control form-control-solid @error('name') border-danger @enderror" name="name" value="{{old('name')}}" required>
                                     @error('name')
@@ -58,7 +58,6 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Ünvan</span>
-                                        <i class="ki-duotone ki-information fs-7">
                                     </label>
                                     <input type="text" class="form-control form-control-solid @error('degree') border-danger @enderror" name="degree" value="{{old('degree')}}" required>
                                     @error('degree')
@@ -67,13 +66,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row row-cols-1 row-cols-sm-@role('superadmin')2 @endrole rol-cols-md-1 row-cols-lg-@role('superadmin')2 @endrole">
-                           @role('superadmin')
+                        <div class="row row-cols-1 row-cols-sm-2  rol-cols-md-1 row-cols-lg-2">
+                           {{-- @role('superadmin')@role('superadmin' --}}
                             <div class="col">
                                 <div class="fv-row mb-7 fv-plugins-icon-container">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Departman</span>
-                                        <i class="ki-duotone ki-information fs-7">
                                     </label>
                                     <select class="form-control form-control-solid @error('department_id') border-danger @enderror" data-control="select2" data-placeholder="Departman Seçiniz" data-allow-clear="true" name="department_id" required>
                                         @foreach ($departments as $department)
@@ -85,12 +83,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            @endrole
+                            {{-- @endrole --}}
                             <div class="col">
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Pozisyon</span>
-                                        <i class="ki-duotone ki-information fs-7">
                                     </label>
                                     <select class="form-control form-control-solid  @error('position_id') border-danger @enderror" data-control="select2" data-placeholder="Pozisyon Seçiniz" data-allow-clear="true" name="position_id" required>
                                         @foreach ($positions as $position)
@@ -108,7 +105,6 @@
                                 <div class="fv-row mb-7 fv-plugins-icon-container">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">E-posta Adresi</span>
-                                        <i class="ki-duotone ki-information fs-7">
                                     </label>
                                     <input type="email" class="form-control form-control-solid @error('email') border-danger @enderror" name="email" value="{{old('email')}}" required>
                                     @error('email')
@@ -117,36 +113,37 @@
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="fv-row mb-7">
+                                <div class="fv-row mb-7"data-kt-password-meter="true">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Şifre</span>
-                                        <i class="ki-duotone ki-information fs-7"></i>
                                     </label>
+                                    <div class="position-relative mb-3">
                                     <input type="password" class="form-control form-control-solid  @error('password') border-danger @enderror" name="password" value="{{old('password')}}" required>
+                                    <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2" data-kt-password-meter-control="visibility">
+                                        <i class="bi bi-eye-slash fs-2"></i>
+                                        <i class="bi bi-eye fs-2 d-none"></i>
+                                    </span>
+                                    </div>
                                     @error('password')
                                     <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                     @enderror
                                 </div>
                             </div>
                             <div class="col">
-                                <div class="fv-row mb-7">
+                                <div class="fv-row mb-7"data-kt-password-meter="true">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span class="required">Telefon Numarası</span>
-                                        <i class="ki-duotone ki-information fs-7"></i>
                                     </label>
                                     <input type="number" class="form-control form-control-solid  @error('phone') border-danger @enderror" name="phone" value="{{old('phone')}}" required>
                                     @error('phone')
                                     <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                     @enderror
                                 </div>
-                            </div>
-                        </div>
-                         <div class="fv-row mb-7">
+                            </div>                         <div class="fv-row mb-7">
                              <label class="fs-6 fw-semibold form-label mt-3">
-                                 <span>Vardiya</span>
-                                 <i class="ki-duotone ki-information fs-7">
+                                 <span class="required">Vardiya</span>
                              </label>
-                             <select class="form-control form-control-solid  @error('shift_id') border-danger @enderror" data-control="select2" data-placeholder="Vardiya Seçiniz" data-allow-clear="true" name="shift_id">
+                             <select class="form-control form-control-solid  @error('shift_id') border-danger @enderror" data-control="select2" data-placeholder="Vardiya Seçiniz" data-allow-clear="true" name="shift_id" required>
                                  <option value="none" selected disabled hidden>-Seçiniz-</option>
                                  @foreach ($shifts as $shift)
                                  <option @selected(old('shift_id')==$shift->id) value="{{$shift->id}}">{{$shift->name}}</option>
@@ -156,6 +153,17 @@
                              <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                              @enderror
                          </div>
+                        </div>
+                        <div class="fv-row mb-7">
+                            <label class="fs-6 fw-semibold form-label mt-3">
+                                <span class="required">Kart No</span>
+
+                            </label>
+                            <input type="text" class="form-control form-control-solid @error('card_no') border-danger @enderror" name="card_no" value="{{old('card_no')}}" required>
+                            @error('card_no')
+                            <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                            @enderror
+                        </div>
                         <hr class="bg-secondary">
                         <div class="card-title m-0">
                             <h3 class="fw-bolder m-0">Kişisel Bilgiler
@@ -168,7 +176,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Medeni Hali</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <select class="form-control form-control-solid @error('marital_status') border-danger @enderror" data-control="select2" data-placeholder="Medeni Hali seçiniz" name="marital_status">
                                         <option @selected(old('marital_status') == 0) value="0">Bekar</option>
@@ -183,7 +191,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Engel Durumu</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <select class="form-control form-control-solid @error('obstacle_rating') border-danger @enderror" data-control="select2" data-placeholder="Engel Durumu Seçiniz" name="obstacle_rating">
                                         <option @selected(old('obstacle_rating') == 0) value="0">Yok</option>
@@ -202,7 +210,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Uyruk</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <input type="text" class="form-control form-control-solid @error('nationality') border-danger @enderror" name="nationality" value="{{old('nationality')}}">
                                      @error('nationality')
@@ -214,7 +222,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Çocuk Sayısı</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <input type="number" class="form-control form-control-solid @error('child_count') border-danger @enderror" name="child_count" value="{{old('child_count')}}">
                                      @error('child_count')
@@ -228,7 +236,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Eğitim Seviyesi</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <select class="form-control form-control-solid @error('educational_level') border-danger @enderror" data-control="select2" data-placeholder="Eğitim Seviyesi Seçiniz" name="educational_level">
                                         <option @selected(old('educational_level') == 0)  value="0">Yok</option>
@@ -247,7 +255,6 @@
                         <div class="fv-row mb-7">
                             <label class="fs-6 fw-semibold form-label mt-3">
                                 <span>Adres</span>
-                                <i class="ki-duotone ki-information fs-7">
                             </label>
                             <textarea name="adress" cols="30" rows="5" class="form-control form-control-solid @error('adress') border-danger @enderror">{{old('adress')}}</textarea>
                              @error('adress')
@@ -264,7 +271,6 @@
                         <div class="fv-row mb-7">
                             <label class="fs-6 fw-semibold form-label mt-3">
                                 <span>Ad Soyad</span>
-                                <i class="ki-duotone ki-information fs-7">
                             </label>
                             <input type="text" class="form-control form-control-solid @error('urgent_name') border-danger @enderror" name="urgent_name" value="{{old('urgent_name')}}">
                              @error('urgent_name')
@@ -276,7 +282,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Yakınlık Derecesi</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <select class="form-control form-control-solid @error('proximity') border-danger @enderror" data-control="select2" data-placeholder="Yakınlık Derecesi Seçiniz" name="proximity">
                                         <option @selected(old('proximity') == 0)  value="0">Baba</option>
@@ -293,7 +299,7 @@
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
                                         <span>Telefon Numarası</span>
-                                        <i class="ki-duotone ki-information fs-7">
+    
                                     </label>
                                     <input type="number" class="form-control form-control-solid @error('urgent_phone') border-danger @enderror" name="urgent_phone" value="{{old('urgent_phone')}}">
                                     @error('urgent_phone')
@@ -313,10 +319,10 @@
                             <div class="col">
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
-                                        <span class="required">Sicil No</span>
-                                        <i class="ki-duotone ki-information fs-7">
+                                        <span>Sicil No</span>
+    
                                     </label>
-                                     <input type="number" class="form-control form-control-solid @error('registration_number') border-danger @enderror" name="registration_number" value="{{old('registration_number')}}" required>
+                                     <input type="number" class="form-control form-control-solid @error('registration_number') border-danger @enderror" name="registration_number" value="{{old('registration_number')}}">
                                      @error('registration_number')
                                      <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                      @enderror
@@ -325,10 +331,10 @@
                             <div class="col">
                                 <div class="fv-row mb-7">
                                     <label class="fs-6 fw-semibold form-label mt-3">
-                                        <span class="required">TC Kimlik No</span>
-                                        <i class="ki-duotone ki-information fs-7">
+                                        <span>TC Kimlik No</span>
+    
                                     </label>
-                                    <input type="number" class="form-control form-control-solid  @error('identification_number') border-danger @enderror" name="identification_number" value="{{old('identification_number')}}" required>
+                                    <input type="number" class="form-control form-control-solid  @error('identification_number') border-danger @enderror" name="identification_number" value="{{old('identification_number')}}">
                                     @error('identification_number')
                                     <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                     @enderror
@@ -340,7 +346,7 @@
                                  <div class="fv-row mb-7">
                                      <label class="fs-6 fw-semibold form-label mt-3">
                                          <span>Nüfusa Bağlı İl</span>
-                                         <i class="ki-duotone ki-information fs-7">
+    
                                      </label>
                                      <select class="form-control form-control-solid @error('city_id') border-danger @enderror" id="city-select" data-control="select2" data-placeholder="İl Seçiniz" name="city_id">
                                          <option value="none" selected disabled hidden>-Seçiniz-</option>
@@ -357,7 +363,7 @@
                                  <div class="fv-row mb-7">
                                      <label class="fs-6 fw-semibold form-label mt-3">
                                          <span>Nüfusa Bağlı İlçe</span>
-                                         <i class="ki-duotone ki-information fs-7">
+    
                                      </label>
                                      <select class="form-control form-control-solid @error('district_id') border-danger @enderror" data-control="select2" id="district-select" data-placeholder="İlçe Seçiniz" name="district_id">
                                          <option value="none" selected disabled hidden>-Seçiniz-</option>
@@ -376,7 +382,6 @@
                          <div class="fv-row mb-7">
                              <label class="fs-6 fw-semibold form-label mt-3">
                                  <span>Mahalle Köy</span>
-                                 <i class="ki-duotone ki-information fs-7">
                              </label>
                              <input type="text" class="form-control form-control-solid @error('neighbourhood') border-danger @enderror" name="neighbourhood" value="{{old('neighbourhood')}}">
                               @error('neighbourhood')
@@ -388,7 +393,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Baba Adı</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                        <input type="text" class="form-control form-control-solid  @error('father_name') border-danger @enderror" name="father_name" value="{{old('father_name')}}">
                                        @error('father_name')
@@ -400,7 +405,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Anne Adı</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                        <input type="text" class="form-control form-control-solid @error('mother_name') border-danger @enderror" name="mother_name" value="{{old('mother_name')}}">
                                         @error('mother_name')
@@ -414,7 +419,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Doğum Yeri İl</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                       <select class="form-control form-control-solid @error('birth_city_id') border-danger @enderror" id="birthdate-city-select" data-control="select2" data-placeholder="İl Seçiniz" name="birth_city_id">
                                           <option value="none" selected disabled hidden>-Seçiniz-</option>
@@ -431,7 +436,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Doğum Yeri İlçe</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                       <select class="form-control form-control-solid @error('birth_district_id') border-danger @enderror" data-control="select2" id="birthdate-district-select" data-placeholder="İlçe Seçiniz" name="birth_district_id">
                                           <option value="none" selected disabled hidden>-Seçiniz-</option>
@@ -451,7 +456,7 @@
                                <div class="fv-row mb-7">
                                    <label class="fs-6 fw-semibold form-label mt-3">
                                        <span>Doğum Tarihi</span>
-                                       <i class="ki-duotone ki-information fs-7">
+    
                                    </label>
                                    <input type="date" class="form-control form-control-solid @error('birthdate') border-danger @enderror" name="birthdate" value="{{old('birthdate')}}">
                                    @error('birthdate')
@@ -464,7 +469,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Cilt No</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                       <input type="text" class="form-control form-control-solid @error('volume_number') border-danger @enderror" name="volume_number" value="{{old('volume_number')}}">
                                        @error('volume_number')
@@ -476,7 +481,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Sıra No</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                       <input type="text" class="form-control form-control-solid @error('serial_number') border-danger @enderror" name="serial_number" value="{{old('serial_number')}}">
                                         @error('serial_number')
@@ -490,7 +495,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Aile Sıra No</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                       <input type="text" class="form-control form-control-solid @error('family_serial_number') border-danger @enderror" name="family_serial_number" value="{{old('family_serial_number')}}">
                                         @error('family_serial_number')
@@ -501,13 +506,13 @@
                               <div class="col">
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
-                                          <span class="required">Kart No</span>
-                                          <i class="ki-duotone ki-information fs-7">
+                                          <span>Emekli Sicil No</span>
+        
                                       </label>
-                                      <input type="text" class="form-control form-control-solid @error('card_no') border-danger @enderror" name="card_no" value="{{old('card_no')}}" required>
-                                      @error('card_no')
-                                      <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
-                                      @enderror
+                                      <input type="number" class="form-control form-control-solid @error('retired_registration_number') border-danger @enderror" name="retired_registration_number" value="{{old('retired_registration_number')}}">
+                                       @error('retired_registration_number')
+                                       <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                       @enderror
                                   </div>
                               </div>
                           </div>
@@ -516,7 +521,7 @@
                                   <div class="fv-row mb-7">
                                       <label class="fs-6 fw-semibold form-label mt-3">
                                           <span>Kan Grubu</span>
-                                          <i class="ki-duotone ki-information fs-7">
+        
                                       </label>
                                      <select class="form-control form-control-solid @error('blood_group') border-danger @enderror" data-control="select2" data-placeholder="Kan Grubu Seçiniz" name="blood_group">
                                          <option value="">Kan Grubu Seçiniz</option>
@@ -535,22 +540,13 @@
                                   </div>
                               </div>
                               <div class="col">
-                                  <div class="fv-row mb-7">
-                                      <label class="fs-6 fw-semibold form-label mt-3">
-                                          <span>Emekli Sicil No</span>
-                                          <i class="ki-duotone ki-information fs-7">
-                                      </label>
-                                      <input type="number" class="form-control form-control-solid @error('retired_registration_number') border-danger @enderror" name="retired_registration_number" value="{{old('retired_registration_number')}}">
-                                       @error('retired_registration_number')
-                                       <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
-                                       @enderror
-                                  </div>
+
                               </div>
                           </div>
                           {{-- <div class="fv-row mb-7">
                               <label class="fs-6 fw-semibold form-label mt-3">
                                   <span class="required">İmza Bilgileri</span>
-                                  <i class="ki-duotone ki-information fs-7">
+
                               </label>
                               <input type="text" class="form-control form-control-solid" name="signature" value="" required>
                           </div> --}}
@@ -570,6 +566,7 @@
             </div>
         </div>
     </div>
+    @endrole
 </div>
 @endsection
 @section('js')

@@ -41,7 +41,6 @@ class UserController extends Controller
             'company_id' => auth()->user()->company_id,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            //            'department_id' => $request->department_id,
             'email_verified_at' => Carbon::now(),
         ]);
 
@@ -55,11 +54,7 @@ class UserController extends Controller
             }
         }
 
-        if ($request->admin) {
-            $user->syncRoles('admin');
-        } else {
-            $user->syncRoles('personal');
-        }
+        $user->syncRoles('admin');
 
         return redirect()->back()->with(['success' => 'Kullanıcı başarıyla eklendi.']);
     }
@@ -78,13 +73,11 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, string $id)
     {
-        //        dd($request->update_department_id);
         $user = User::query()->where('id', $id)->firstOrFail();
         $user->update([
             'name' => $request->update_name,
             'email' => $request->update_email,
             'password' => $request->update_password ? bcrypt($request->update_password) : $user->password,
-            //            'department_id' => $request->update_department_id,
         ]);
 
         UserDepartment::where('user_id', $id)->delete();

@@ -23,7 +23,7 @@ class UserStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users,email',
+            // 'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|min:6|max:255|confirmed',
             //            'department_id' => 'required',
         ];
@@ -37,7 +37,7 @@ class UserStoreRequest extends FormRequest
             'email.required' => 'E-posta adresi boş bırakılamaz.',
             'email.email' => 'Lütfen geçerli bir e-posta adresi giriniz.',
             'email.max' => 'E-posta adresi en fazla 255 karakter olmalıdır.',
-            'email.unique' => 'E-posta adresi sistemde kayıtlı.',
+            // 'email.unique' => 'E-posta adresi sistemde kayıtlı.',
             'password.required' => 'Şifre boş bırakılamaz.',
             'password.min' => 'Şifre en az 6 karakter olmalıdır.',
             'password.max' => 'Şifre en fazla 255 karakter olmalıdır.',

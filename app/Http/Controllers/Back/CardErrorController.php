@@ -13,7 +13,7 @@ class CardErrorController extends Controller
      */
     public function index()
     {
-        $cardErrors = CardError::all();
+        $cardErrors = CardError::byCompany()->get()->reverse();
         return view('back.pages.card_error.index', compact('cardErrors'));
     }
 

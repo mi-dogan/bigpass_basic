@@ -60,7 +60,7 @@
                                 responseType: 'blob'
                             },
                             data: {
-                                device_id: {{ $device?->device_id }},
+                                device_id: @json($device?->device_id),
                             },
                             success: function (response) {
                                 const blob = new Blob([response], { type: 'image/png' });
@@ -72,7 +72,6 @@
                                 startCountdown()
                             },
                             error: function(XMLHttpRequest, textStatus, errorThrown) {
-                                console.log(XMLHttpRequest.responseJSON.message)
                                 $('.alert-result').addClass('alert-danger').html(XMLHttpRequest.responseJSON.message);
                             }
                         });

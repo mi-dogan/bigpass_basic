@@ -89,21 +89,16 @@
                 <div class="card-body">
                     <table class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll" id="kt_datatable_example">
                         <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-uppercase bg-light w-100 px-0 mx-0"style="font-size: 15px;">
                                   <th class="text-start px-md-12 px-6 w-25">Firma Adı</th>
                                   <th class="text-start px-md-12 px-6 w-25">Yetkili Adı</th>
                                   <th class="text-start px-md-12 px-6 w-25">Yetkili E-posta</th>
-                                  {{-- <th class="text-start px-md-12 px-6 w-25">Yetkili Şifre</th> --}}
                                   <th class="text-start px-md-12 px-6 w-25">Lisans Bitiş Tarihi</th>
-                                  {{-- <th class="text-start px-md-12 px-6 w-25">Şube Limit</th>
-                                  <th class="text-start px-md-12 px-6 w-25">Departman Limit </th>
-                                  <th class="text-start px-md-12 px-6 w-25">Pozisyon Limit </th>
-                                  <th class="text-start px-md-12 px-6 w-25">Çalışan Limit </th>
-                                  <th class="text-start px-md-12 px-6 w-25">Vardiya Limit </th> --}}
                                   <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-semibold text-gray-600">
+                        <tbody class="fw-semibold text-gray-900" style="font-size: 13px;">
+                            @if($companys)
                             @foreach($companys as $company)
                             <tr>
                             <td class="text-start px-md-12 px-6 py-6">
@@ -154,6 +149,17 @@
                             </td>
                         </tr>
                             @endforeach
+                            @else
+                            <tr>
+                                <td colspan="5" class="text-center">
+                                    Tabloda veri yok
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            @endif
                         </tbody>
                     </table>
                 </div>
@@ -205,7 +211,7 @@
                              <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                              @enderror
                          </div>
-                         <div class="fv-row mb-5">
+                         <div class="fv-row mb-5" data-kt-password-meter="true">
                              <label class="form-label fs-7">Yetkili Şifre</label>
                              <div class="position-relative mb-3">
                                 <input class="form-control form-control-lg bg-transparent @error('admin_password') border-danger @enderror" type="password" name="admin_password" value="{{old('admin_password')}}" required="">
@@ -304,11 +310,11 @@
             </div>
         </div>
         <div>
-            <div class="ps-2 d-flex gap-2"><h3>Şube Limiti :</h3><span class="h3"> {{$company->branch_limit}}</span></div>
-            <div class="ps-2 d-flex gap-2"><h3>Departman Limiti :</h3><span class="h3"> {{$company->department_limit}}</span></div>
-            <div class="ps-2 d-flex gap-2"><h3>Pozisyon Limiti :</h3><span class="h3"> {{$company->position_limit}}</span></div>
-            <div class="ps-2 d-flex gap-2"><h3>Çalışan Limiti :</h3><span class="h3"> {{$company->worker_limit}}</span></div>
-            <div class="ps-2 d-flex gap-2"><h3>Vardiya Limiti :</h3><span class="h3"> {{$company->shift_limit}}</span></div>
+            <div class="ps-2 d-flex gap-2"><h3>Şube Limiti :</h3><span class="h3" id="branch_limit"> </span></div>
+            <div class="ps-2 d-flex gap-2"><h3>Departman Limiti :</h3><span class="h3"id="department_limit"> </span></div>
+            <div class="ps-2 d-flex gap-2"><h3>Pozisyon Limiti :</h3><span class="h3"id="position_limit"> </span></div>
+            <div class="ps-2 d-flex gap-2"><h3>Çalışan Limiti :</h3><span class="h3"id="worker_limit"> </span></div>
+            <div class="ps-2 d-flex gap-2"><h3>Vardiya Limiti :</h3><span class="h3"id="shift_limit"> </span></div>
         </div>
     </div>
     </div>
@@ -356,13 +362,13 @@
                              <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                              @enderror
                          </div>
-                         <div class="fv-row mb-5">
+                         {{-- <div class="fv-row mb-5">
                              <label class="form-label fs-7">Yetkili Şifre</label>
                              <input id="update_admin_password" class="form-control form-control-lg bg-transparent @error('update_admin_password') border-danger @enderror" type="text" name="update_admin_password" value="{{old('update_admin_password')}}" required>
                              @error('update_admin_password')
                              <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                              @enderror
-                         </div>
+                         </div> --}}
                         </div>    
                          <div class="fv-row mb-5">
                             <label  class="form-label fs-7">Lisans Bitiş Tarihi </label>
@@ -448,11 +454,10 @@
             url: Ajaxurl,
             data: {id: id},
             success: function (response) {
-                console.log(response)
                 $('#update_name').val(response.company.name);
             $('#update_company_admin').val(response.company.company_admin);
             $('#update_admin_email').val(response.company.admin_email);
-            $('#update_admin_password').val(response.company.admin_password);
+            // $('#update_admin_password').val(response.company.admin_password);
             $('#update_licence_end_date').val(response.company.licence_end_date);
             $('#update_branch_limit').val(response.company.branch_limit);
             $('#update_department_limit').val(response.company.department_limit);
@@ -461,13 +466,36 @@
             $('#update_shift_limit').val(response.company.shift_limit);
                 $('#kt_modal_edit_companys_form').attr('action',url);
                 $('#kt_modal_edit_companys').modal('show');
-                console.log($('#update_name').val)
             }
          });
     }
     function detailsModal(id)
     {
-        $('#kt_modal_display_limits').modal('show');
+            localStorage.setItem('id',id);
+        var Ajaxurl = '{{ route('companys.show', ':id') }}';
+        Ajaxurl = Ajaxurl.replace(':id', id);
+        var url = '{{ route('companys.update', ':id') }}';
+        url = url.replace(':id', id);
+         $.ajax({
+            type: "GET",
+            url: Ajaxurl,
+            data: {id: id},
+            success: function (response) {
+        $('#branch_limit').val(response.company.branch_limit);
+        $('#department_limit').val(response.company.department_limit);
+        $('#position_limit').val(response.company.position_limit);
+        $('#worker_limit').val(response.company.worker_limit);
+        $('#worker_limit').text(response.company.worker_limit);
+        $('#shift_limit').val(response.company.shift_limit);
+        $('#branch_limit').text(response.company.branch_limit);
+        $('#department_limit').text(response.company.department_limit);
+        $('#position_limit').text(response.company.position_limit);
+        // $('#wmployee_limit').text(response.company.worker_limit);
+        $('#shift_limit').text(response.company.shift_limit);
+                $('#kt_modal_display_limits').modal('show');
+            }
+         });
+        // $('#kt_modal_display_limits').modal('show');
     }
 
     function deleteCompany(url){
@@ -482,7 +510,6 @@
           cancelButtonText: 'İptal'
       }).then((result) => {
       if (result.isConfirmed) {
-        console.log(url);
        window.location.href = url;
       }
       });
@@ -512,3 +539,4 @@
 </script>
 @endif
 @endsection
+{{-- xccxccxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcxcx --}}

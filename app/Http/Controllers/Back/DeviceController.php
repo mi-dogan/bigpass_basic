@@ -15,7 +15,7 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = Device::byCompany()->get();
+        $devices = Device::byCompany()->get()->reverse();
         $modals = ['create' => ['device_id'], 'edit' => ['update_device_id']];
         return view('back.pages.device.index', compact('modals', 'devices'));
     }
@@ -30,7 +30,10 @@ class DeviceController extends Controller
 
         Device::query()->create([
             'company_id' => auth()->user()->company_id,
+            'device_name' => $request->device_name,
             'device_id' => $request->device_id,
+            'device_type' => $request->device_type,
+            'device_ip' => $request->device_ip,
             'qr_code' => $qrCode["code"],
             'device_code' => uniqid()
         ]);
@@ -77,6 +80,9 @@ class DeviceController extends Controller
 
         $device->update([
             'device_id' => $request->update_device_id,
+            'device_name' => $request->update_device_name,
+            'device_type' => $request->update_device_type,
+            'device_ip' => $request->update_device_ip,
             'qr_code' => $device->qr_code != "" ? $device->qr_code : $qrCode["code"],
             'device_code' => $device->device_code != "" ? $device->device_code : uniqid()
         ]);

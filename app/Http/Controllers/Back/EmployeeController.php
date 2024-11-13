@@ -7,6 +7,8 @@ use App\Models\Branch;
 use App\Models\Companys;
 use App\Models\Position;
 use App\Models\Department;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Back\EmployeeStoreRequest;
@@ -35,16 +37,24 @@ class EmployeeController extends Controller
     public function create()
     {
         $companyId = auth()->user()->company_id;
+        if (auth()->user()->company_id == 0) {
+            $data['branchs'] = Branch::byCompany()->get();
+            $data['departments'] = Department::byCompany()->get();
+            $data['positions'] = Position::byCompany()->get();
+            $data['cities'] = City::query()->get();
+            $data['shifts'] = Shift::byCompany()->where('status', true)->get();
+            return view('back.pages.employee.create', array_merge($data, ['limitReached' => false]));
+        }
         $EmployeeCount = Employee::where('company_id', $companyId)->count();
         $currentCompany = Companys::query()->where('id', $companyId)->first();
-        $EmployeeLimit = $currentCompany->Employee_limit;
+        $EmployeeLimit = $currentCompany->worker_limit;
         if ($EmployeeLimit == 0) {
             $data['branchs'] = Branch::byCompany()->get();
             $data['departments'] = Department::byCompany()->get();
             $data['positions'] = Position::byCompany()->get();
             $data['cities'] = City::query()->get();
             $data['shifts'] = Shift::byCompany()->where('status', true)->get();
-            return view('back.pages.employee.create', $data);
+            return view('back.pages.employee.create', array_merge($data, ['limitReached' => false]));
         } else if ($EmployeeCount >= $EmployeeLimit) {
             return response()->json(['limitReached' => true]);
         } else {
@@ -53,7 +63,7 @@ class EmployeeController extends Controller
             $data['positions'] = Position::byCompany()->get();
             $data['cities'] = City::query()->get();
             $data['shifts'] = Shift::byCompany()->where('status', true)->get();
-            return view('back.pages.employee.create', $data);
+            return view('back.pages.employee.create', array_merge($data, ['limitReached' => false]));
         }
 
     }
@@ -129,6 +139,17 @@ class EmployeeController extends Controller
             'department_id' => $request->department_id ?? Auth::user()->department_id,
             'employee_id' => $employee->id
         ]);
+        $user = User::query()->create([
+            'company_id' => auth()->user()->company_id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'phone' => $request->phone,
+            'department_id' => $request->department_id ?? Auth::user()->department_id,
+            'email_verified_at' => Carbon::now(),
+            'employee_id' => $employee->id
+        ]);
+        $user->syncRoles('personel');
 
         return redirect()->route('calisanlar.index')->with(['success' => 'Çalışan başarıyla eklendi.']);
     }
@@ -169,6 +190,7 @@ class EmployeeController extends Controller
         $information = EmployeeInformation::query()->where('employee_id', $employee->id)->firstOrCreate();
         $urgent = EmployeeUrgent::query()->where('employee_id', $employee->id)->firstOrCreate();
         $card = EmployeeCard::query()->where('employee_id', $employee->id)->firstOrCreate();
+        $user = User::query()->where('employee_id', $employee->id)->firstOrCreate();
 
         $employee->update([
             'profile_image' => $image,
@@ -215,6 +237,13 @@ class EmployeeController extends Controller
             'birth_district_id' => $request->birth_district_id,
             'department_id' => $request->department_id ?? Auth::user()->department_id,
         ]);
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $employee->password,
+            'phone' => $request->phone,
+            'department_id' => $request->department_id ?? Auth::user()->department_id,
+        ]);
 
         return redirect()->route('calisanlar.index')->with(['success' => 'Çalışan başarıyla güncellendi.']);
     }
@@ -225,7 +254,7 @@ class EmployeeController extends Controller
 
     public function employees(string $id)
     {
-        $employees = Employee::with('department')->get();
+        $employees = Employee::byCompany()->with('department')->get();
 
         return response()->json([
             'employees' => $employees

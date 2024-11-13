@@ -51,9 +51,16 @@ class DepartmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->id;
         $companyId = auth()->user()->company_id;
+        if ($companyId == 0) {
+            $department = Department::query()->where('id', $id)->first();
+            return response()->json([
+                'department' => $department
+            ], 200);
+        }
         $departmentCount = Department::where('company_id', $companyId)->count();
         $currentCompany = Companys::query()->where('id', $companyId)->first();
         $departmentLimit = $currentCompany->department_limit;
@@ -63,15 +70,20 @@ class DepartmentController extends Controller
                 'department' => $department
             ], 200);
         } else if ($departmentCount >= $departmentLimit) {
-            return response()->json(['limitReached' => true], 200);
+            if ($request->method == 'edit') {
+                $department = Department::query()->where('id', $id)->first();
+                return response()->json([
+                    'department' => $department
+                ], 200);
+            } else {
+                return response()->json(['limitReached' => true], 200);
+            }
         } else {
             $department = Department::query()->where('id', $id)->first();
             return response()->json([
                 'department' => $department
             ], 200);
         }
-
-
     }
 
     /**

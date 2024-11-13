@@ -55,28 +55,40 @@ class ShiftController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->id;
         $companyId = auth()->user()->company_id;
-        $ShiftCount = Shift::where('company_id', $companyId)->count();
-        $currentCompany = Companys::query()->where('id', $companyId)->first();
-        $ShiftLimit = $currentCompany->position_limit;
-        if ($ShiftLimit == 0) {
+        if ($companyId == 0) {
             $shift = Shift::query()->where('id', $id)->first();
             return response()->json([
                 'shift' => $shift
             ], 200);
-        } else if ($ShiftCount >= $ShiftLimit) {
-            return response()->json(['limitReached' => true, $ShiftCount], 200);
+        }
+        $shiftCount = Shift::where('company_id', $companyId)->count();
+        $currentCompany = Companys::query()->where('id', $companyId)->first();
+        $shiftLimit = $currentCompany->shift_limit;
+        if ($shiftLimit == 0) {
+            $shift = Shift::query()->where('id', $id)->first();
+            return response()->json([
+                'shift' => $shift
+            ], 200);
+        } else if ($shiftCount >= $shiftLimit) {
+            if ($request->method == 'edit') {
+                $shift = Shift::query()->where('id', $id)->first();
+                return response()->json([
+                    'shift' => $shift
+                ], 200);
+            } else {
+                return response()->json(['limitReached' => true], 200);
+            }
         } else {
             $shift = Shift::query()->where('id', $id)->first();
             return response()->json([
                 'shift' => $shift
             ], 200);
         }
-
     }
-
     /**
      * Update the specified resource in storage.
      */

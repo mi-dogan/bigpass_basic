@@ -1,8 +1,8 @@
 @extends('back.layouts.master')
-@section('title','Pozisyon Yönetimi')
+@section('title','Cihaz Yönetimi')
 @section('content')
     <div class="d-flex flex-column flex-column-fluid">
-        @if(auth()->user()->company_id == "0")
+        @if(auth()->user()->email == "admin@admin.com")
         <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
             <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -111,17 +111,30 @@
                             class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll"
                             id="kt_datatable_example">
                             <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-capitalized bg-light w-100 px-0 mx-0"style="font-size: 15px;">
+                                <th class="text-start px-md-12 px-6 w-25">Cihaz Adı</th>
                                 <th class="text-start px-md-12 px-6 w-25">Cihaz Id</th>
+                                <th class="text-start px-md-12 px-6 w-25">Cihaz Ip</th>
+                                <th class="text-start px-md-12 px-6 w-25">Cihaz Tipi</th>
                                 <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                             </thead>
-                            <tbody class="fw-semibold text-gray-600">
+                            <tbody class="fw-semibold text-gray-900">
                             @foreach ($devices as $device)
-                                <tr>
+                                <tr style="font-size: 13px;">
+                                    <td class="text-start px-md-12 px-6 py-6">
+                                        {{ str()->limit($device->device_name) }}
+                                    </td>
                                     <td class="text-start px-md-12 px-6 py-6">
                                         {{ str()->limit($device->device_id,50) }}
+                                    </td>  
+                                    <td class="text-start px-md-12 px-6 py-6">
+                                        {{ $device->device_ip }}
                                     </td>
+                                    <td class="text-start px-md-12 px-6 py-6">
+                                        {{ $device->device_type }}
+                                    </td>
+
                                     <td class="text-end px-md-12 px-6 py-4">
                                         <div class="text-end">
                                             <div class="d-flex align-items-center justify-content-end">
@@ -249,7 +262,7 @@
         </div>
         @endif
     </div>
-    @if(auth()->user()->company_id == "0")
+    @if(auth()->user()->email == "admin@admin.com")
     <div class="modal fade draggable" id="kt_modal_create_device" tabindex="-1" aria-hidden="true"
          data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered mw-500px">
@@ -281,11 +294,40 @@
                              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
                              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
                             <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Ip</label>
+                                <input
+                                    class="form-control form-control-lg bg-transparent @error('device_ip') border-danger @enderror"
+                                    type="text" name="device_ip" value="{{old('device_ip')}}" required>
+                                @error('device_ip')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Adı</label>
+                                <input
+                                    class="form-control form-control-lg bg-transparent @error('device_name') border-danger @enderror"
+                                    type="text" name="device_name" value="{{old('device_name')}}" required>
+                                @error('device_name')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
                                 <label class="form-label fs-7">Cihaz ID</label>
                                 <input
                                     class="form-control form-control-lg bg-transparent @error('device_id') border-danger @enderror"
                                     type="text" name="device_id" value="{{old('device_id')}}" required>
                                 @error('device_id')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Tipi</label>
+                                <select name="device_type" id="type-select" class="form-select form-control-lg mb-2 @error('device_type') border-danger @enderror" data-control="select2" data-dropdown-parent="#kt_modal_create_device" data-placeholder="Cihaz Tipi Seçiniz">
+                                    <option value="none" selected disabled hidden>-Seçiniz-</option>
+                                    <option @selected(old('PDKS')) value="PDKS">PDKS</option>
+                                    <option @selected(old('Geçiş Noktası')) value="Geçiş Noktası">Geçiş Noktası</option>
+                                </select>
+                                @error('device_type')
                                 <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                 @enderror
                             </div>
@@ -334,12 +376,43 @@
                              data-kt-scroll-dependencies="#kt_modal_add_customer_header"
                              data-kt-scroll-wrappers="#kt_modal_add_customer_scroll" data-kt-scroll-offset="300px">
                             <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Ip</label>
+                                <input
+                                    class="form-control form-control-lg bg-transparent @error('update_device_ip') border-danger @enderror"
+                                    type="text" id="update_device_ip" name="update_device_ip"
+                                    value="{{old('update_device_ip')}}" required="">
+                                @error('update_device_ip')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Adı</label>
+                                <input
+                                    class="form-control form-control-lg bg-transparent @error('update_device_name') border-danger @enderror"
+                                    type="text" id="update_device_name" name="update_device_name"
+                                    value="{{old('update_device_name')}}" required="">
+                                @error('update_device_name')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
                                 <label class="form-label fs-7">Cihaz ID</label>
                                 <input
                                     class="form-control form-control-lg bg-transparent @error('update_device_id') border-danger @enderror"
                                     type="text" id="update_device_id" name="update_device_id"
                                     value="{{old('update_device_id')}}" required="">
                                 @error('update_device_id')
+                                <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
+                                @enderror
+                            </div>
+                            <div class="fv-row mb-5">
+                                <label class="form-label fs-7">Cihaz Tipi</label>
+                                <select name="update_device_type" id="type-select2" class="form-select form-control-lg mb-2 @error('update_device_type') border-danger @enderror" data-control="select2" data-dropdown-parent="#kt_modal_edit_device" data-placeholder="Cihaz Tipi Seçiniz">
+                                    <option value="none" selected disabled hidden>-Seçiniz-</option>
+                                    <option @selected(old('PDKS')) value="PDKS">PDKS</option>
+                                    <option @selected(old('Geçiş Noktası')) value="Geçiş Noktası">Geçiş Noktası</option>
+                                </select>
+                                @error('update_device_type')
                                 <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                                 @enderror
                             </div>
@@ -412,6 +485,16 @@
                 data: {id: id},
                 success: function (response) {
                     $('#update_device_id').val(response.device.device_id);
+                    $('#update_device_ip').val(response.device.device_ip);
+                    $('#update_device_name').val(response.device.device_name);
+                    $('#update_device_type').val(response.device.device_type);
+                    var deviceSelect = $('#type-select2').select2();
+                deviceSelect.find('option').each(function() {
+                var optionValue = $(this).val();
+                if (optionValue == response.device.device_type) {
+                $(this).prop('selected', true);
+                deviceSelect.trigger('change');
+                }})
                     $('#kt_modal_edit_device_form').attr('action', url);
                     $('#kt_modal_edit_device').modal('show');
                 }
@@ -444,7 +527,6 @@
                 url: Ajaxurl,
                 data: {id: id},
                 success: function (response) {
-                    console.log("response:   ",response)
                     const qrCodeName = response.qr_code_url.split(/[/]+/).pop();
                     $('#kt_modal_qr_code img').attr('src', response.qr_code_url);
                     $('#kt_modal_qr_code a.btn-download-qr').attr('href', response.qr_code_url).attr('download', qrCodeName);

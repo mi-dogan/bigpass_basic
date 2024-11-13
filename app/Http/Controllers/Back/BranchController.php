@@ -42,9 +42,16 @@ class BranchController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->id;
         $companyId = auth()->user()->company_id;
+        if ($companyId == 0) {
+            $branch = Branch::query()->where('id', $id)->first();
+            return response()->json([
+                'branch' => $branch
+            ], 200);
+        }
         $branchCount = Branch::where('company_id', $companyId)->count();
         $currentCompany = Companys::query()->where('id', $companyId)->first();
         $branchLimit = $currentCompany->branch_limit;
@@ -54,28 +61,22 @@ class BranchController extends Controller
                 'branch' => $branch
             ], 200);
         } else if ($branchCount >= $branchLimit) {
-            return response()->json(['limitReached' => true], 200);
+            if ($request->method == 'edit') {
+                $branch = Branch::query()->where('id', $id)->first();
+                return response()->json([
+                    'branch' => $branch
+                ], 200);
+            } else {
+                return response()->json(['limitReached' => true], 200);
+            }
         } else {
             $branch = Branch::query()->where('id', $id)->first();
             return response()->json([
                 'branch' => $branch
             ], 200);
         }
-
     }
-    // public function checkLimit()
-    // {
-    //     // dd("xxx");
-    //     $companyId = auth()->user()->company_id;
-    //     $branchCount = Branch::where('company_id', $companyId)->count();
-    //     $currentCompany = Companys::query()->where('id', $companyId)->first();
-    //     $branchLimit = $currentCompany->branch_limit;
-    //     if ($branchCount >= $branchLimit) {
-    //         return response()->json(['limitReached' => true], 401);
-    //     } else {
-    //         return response()->json(['limitReached' => false], 200);
-    //     }
-    // }
+
     /**
      * Update the specified resource in storage.
      */

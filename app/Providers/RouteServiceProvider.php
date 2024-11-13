@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/admin';
+    public const HOME = '/';
     public const QR = '/qr';
 
     /**
@@ -39,7 +39,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::resourceVerbs([
-            'create' =>  'olustur',
+            'create' => 'olustur',
             'update' => 'guncelle',
             'edit' => 'duzenle',
             'delete' => 'sil'

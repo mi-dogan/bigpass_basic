@@ -75,7 +75,7 @@ class LoginRequest extends FormRequest
                 // RateLimiter::hit($this->throttleKey());
                 Auth::logout();
                 throw ValidationException::withMessages([
-                    // dd(trans('auth.licence_ended')),
+
                     'email' => trans('auth.licence_ended'),
                 ]);
             }

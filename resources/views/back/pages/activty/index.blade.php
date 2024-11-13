@@ -1,7 +1,8 @@
 @extends('back.layouts.master')
-@section('title','Raporlar')
+@section('title','PDKS Raporları')
 @section('content')
     <div class="d-flex flex-column flex-column-fluid">
+        @role('admin|superadmin|Firma Yetkilisi')
         <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
             <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -12,7 +13,7 @@
                         <li class="breadcrumb-item">
                             <span class="bullet bg-gray-400 w-5px h-2px"></span>
                         </li>
-                        <li class="breadcrumb-item text-muted">Raporlar</li>
+                        <li class="breadcrumb-item text-muted">Geçiş Noktası Raporları</li>
                     </ul>
                 </div>
                 <div class="d-flex align-items-center gap-2 gap-lg-3">
@@ -198,29 +199,22 @@
                             class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll"
                             id="kt_datatable_example">
                             <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-capitalized bg-light w-100 px-0 mx-0"style="font-size: 15px;">
                                 <th class="text-start px-md-12 px-6 w-25">Ad Soyad</th>
+                                <th class="text-start px-md-12 px-6 w-25">Cihaz Adı</th>
                                 <th class="text-start px-md-12 px-6 w-25">Tarih</th>
-                                <th class="text-start px-md-12 px-6 w-25">Süre</th>
-                                <th class="text-start px-md-12 px-6 w-25">Giriş</th>
-                                <th class="text-start px-md-12 px-6 w-25">Çıkış</th>
+                                <th class="text-start px-md-12 px-6 w-25">Son Geçiş</th>
                                 <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                             </thead>
-                            <tbody class="fw-semibold text-gray-600">
+                            <tbody class="fw-semibold text-gray-900">
                             @foreach ($activities as $activity)
-                                <tr>
+                                <tr style="font-size: 13px;">
                                     <td class="text-start px-md-12 px-6 py-6">
                                         {{$activity->employee->name}}
                                     </td>
-                                    <td class="text-start px-md-12 px-6 py-6">
-                                        {{$activity->created_at->translatedFormat('d M Y')}}
-                                    </td>
-                                    <td class="text-start px-md-12 px-6 py-6">
-                                        <span
-                                            class="badge badge-light-primary">{{$activity->total_working_hours}}</span>
-                                    </td>
                                     @php
+                                    $device = \App\Models\Device::query()->where('id',$activity->device_id)->first();
                                         if($activity->shiftDay)
                                         {
                                            $todayDate = date('Y-m-d');
@@ -248,8 +242,10 @@
                                         }
                                     @endphp
                                     <td class="text-start px-md-12 px-6 py-6">
-                                        <span
-                                            class="text-{{$entranceColor ?? 'success'}}">{{$activity->status == 0 ? substr($activity->morning_entrance,0,5) : ($activity->status == 1 ? 'Gelmedi' : 'İzinli')}}</span>
+                                       {{$device->device_name}}
+                                    </td>
+                                    <td class="text-start px-md-12 px-6 py-6">
+                                        {{$activity->created_at->translatedFormat('d M Y')}}
                                     </td>
                                     <td class="text-start px-md-12 px-6 py-6">
                                         @if(isset($activity->last_external->morning_exit))
@@ -278,7 +274,7 @@
                                                         </svg>
                                                     </span>
                                                 </a>
-                                                <a onclick="modal({{$activity->id}})"
+                                                {{-- <a onclick="modal({{$activity->id}})"
                                                    class="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1 bg-gray-200i">
                                                     <span class="svg-icon svg-icon-3">
                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -291,7 +287,7 @@
                                                                 fill="currentColor"></path>
                                                         </svg>
                                                     </span>
-                                                </a>
+                                                </a> --}}
                                             </div>
                                         </div>
                     </div>
@@ -303,6 +299,7 @@
                 </div>
             </div>
         </div>
+        @endrole
     </div>
     <div class="modal fade draggable" id="kt_modal_edit_activity" tabindex="-1" aria-hidden="true"
          data-bs-backdrop="static" data-bs-keyboard="false">
@@ -526,7 +523,7 @@
                     html += `
                 <div class="fs-4 fw-semibold text-gray-400 mb-7"></div>
                 <div class="fs-6 d-flex justify-content-between mb-4">
-                    <div class="fw-semibold">Giriş</div>
+                    <div class="fw-semibold">Ilk Geçiş</div>
                     <div class="d-flex fw-bold text-${morningEntranceColor ?? 'success'}">${response.activity.morning_entrance ?? (response.activity.status == 1 ? 'Gelmedi' : (response.activity.status == 2 ? 'İzinli' : '-'))}</div>
                 </div>
                 <!-- <div class="separator separator-dashed"></div>
@@ -547,7 +544,7 @@
                             html += `<div class="separator separator-dashed"></div>
                 <div class="fs-4 fw-semibold text-gray-400 mb-7"></div>
                 <div class="fs-6 d-flex justify-content-between mb-4">
-                    <div class="fw-semibold">Harici Çıkış</div>
+                    <div class="fw-semibold">Geçiş</div>
                     <div class="d-flex fw-bold text-muted">${external.morning_exit ?? '-'}</div>
                 </div>`;
                             if (external.morning_entrance) {
@@ -555,7 +552,7 @@
                 <div class="separator separator-dashed"></div>
                 <div class="fs-4 fw-semibold text-gray-400 mb-7"></div>
                 <div class="fs-6 d-flex justify-content-between mb-4">
-                    <div class="fw-semibold">Harici Giriş</div>
+                    <div class="fw-semibold">Geçiş</div>
                     <div class="d-flex fw-bold text-muted">${external.morning_entrance ?? '-'}</div>
                 </div>
                 <div class="separator separator-dashed"></div>
@@ -567,7 +564,7 @@
                     html += `<div class="separator separator-dashed"></div>
                 <div class="fs-4 fw-semibold text-gray-400 mb-7"></div>
                 <div class="fs-6 d-flex justify-content-between mb-4">
-                    <div class="fw-semibold">Çıkış</div>
+                    <div class="fw-semibold">Son Geçiş</div>
                     <div class="d-flex fw-bold text-${morningExitColor ?? 'success'}">${response.activity?.last_external?.morning_exit ?? (response.activity.status == 1 ? 'Gelmedi' : (response.activity.status == 2 ? 'İzinli' : (response.activity.morning_exit ? response.activity.morning_exit : '-')))}</div>
                 </div>
                 <div class="separator separator-dashed"></div>`;

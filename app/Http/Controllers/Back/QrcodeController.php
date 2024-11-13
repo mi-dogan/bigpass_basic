@@ -25,9 +25,7 @@ class QrcodeController extends Controller
 
     public function showQrPage($qrCode = "")
     {
-//        dd([$deviceCode, $qrCode]);
         $device = Device::where(["qr_code" => $qrCode])->first();
-
         return view("front.pages.qr_code.show", [
             "device" => $device,
             "employee" => auth()->user()
@@ -48,7 +46,7 @@ class QrcodeController extends Controller
 
     public function generateRaw($code = "")
     {
-//        $qrCodes = [];
+        //        $qrCodes = [];
 //        $qrCodes['simple'] = QrCode::size(120)->generate('https://www.binaryboxtuts.com/');
 //        $qrCodes['changeColor'] = QrCode::size(120)->color(255, 0, 0)->generate('https://www.binaryboxtuts.com/');
 //        $qrCodes['changeBgColor'] = QrCode::size(120)->backgroundColor(255, 0, 0)->generate('https://www.binaryboxtuts.com/');
@@ -58,10 +56,8 @@ class QrcodeController extends Controller
 //        $qrCodes['styleRound'] = QrCode::size(120)->style('round')->generate('https://www.binaryboxtuts.com/');
 //
 //        $qrCodes['withImage'] = QrCode::size(200)->format('png')->merge('/public/backend/media/logos/logo-small.png', .4)->generate('https://www.binaryboxtuts.com/');
-//        dd($qrCodes);
 
-//        return response()->json($qrCodes);
-
+        //        return response()->json($qrCodes);
         $randomCode = $code != "" ? $code : uniqid();
         $imageName = 'QR' . $randomCode;
         $ext = ".png";
@@ -72,7 +68,7 @@ class QrcodeController extends Controller
             ->eyeColor(0, 39, 106, 162, 0, 0, 0)
             ->eyeColor(1, 39, 106, 162, 0, 0, 0)
             ->eyeColor(2, 39, 106, 162, 0, 0, 0)
-//            ->gradient(73, 147, 209, 39, 106, 162,'radial')
+            //            ->gradient(73, 147, 209, 39, 106, 162,'radial')
             ->errorCorrection('M')
             ->format('png')
             ->merge('/public/backend/media/logos/mihmandar-vector.jpg', .20)
@@ -81,23 +77,24 @@ class QrcodeController extends Controller
         return $image;
     }
 
-    public function generate(){
+    public function generate()
+    {
         $randomCode = uniqid();
         $imageName = 'QR' . $randomCode;
         $ext = ".png";
         $image = $this->generateRaw($randomCode);
-        $outputFile = 'qr-codes/' . $imageName.$ext;
+        $outputFile = 'qr-codes/' . $imageName . $ext;
         Storage::disk('public')->put($outputFile, $image);
         $imageUrl = asset(Storage::disk('public')->url($outputFile));
 
-        return ["status" => true, "code" => $imageName, "file_name" => $imageName.$ext, "file_url" => $imageUrl];
+        return ["status" => true, "code" => $imageName, "file_name" => $imageName . $ext, "file_url" => $imageUrl];
     }
 
-    public function generateRandom(Request $request){
-        if($request->device_id && $request->device_id != ""){
+    public function generateRandom(Request $request)
+    {
+        if ($request->device_id && $request->device_id != "") {
             $randomCode = uniqid();
             $imageName = 'QR' . $randomCode;
-
             $device = Device::where("device_id", $request->device_id)->firstOrFail();
             $device->qr_code = $imageName;
             $device->save();
@@ -106,14 +103,14 @@ class QrcodeController extends Controller
             $image = $this->generateRaw($randomCode);
             $image = $manager->read(base64_encode($image));
             $imageJPG = $image->toJpeg(75);
-//            $imageJPG = $manager->make(base64_encode($image))->encode('jpeg', 60)->response("jpeg");
+            //            $imageJPG = $manager->make(base64_encode($image))->encode('jpeg', 60)->response("jpeg");
 
-//            header('Content-Type: image/jpeg');
+            //            header('Content-Type: image/jpeg');
 //            return $imageJPG;
             $response = response()->make($imageJPG, 200);
             $response->header('Content-Type', 'image/jpeg');
             return $response;
-        }else{
+        } else {
             return "Cihaz bulunamadı";
         }
     }

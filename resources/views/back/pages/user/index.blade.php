@@ -2,6 +2,7 @@
 @section('title','Kullanıcı Yönetimi')
 @section('content')
 <div class="d-flex flex-column flex-column-fluid">
+    @role('admin|superadmin|Firma Yetkilisi')
     <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6 col-12">
         <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
             <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
@@ -88,7 +89,7 @@
                 <div class="card-body">
                     <table class="table table-striped border rounded table-row-dashed fs-6  px-0 mx-0 overflow-x-scroll" id="kt_datatable_example">
                         <thead class="py-12 px-2">
-                            <tr class="text-gray-700 fw-bold text-uppercase bg-light w-100 px-0 mx-0">
+                            <tr class="text-gray-900 fw-bold text-capitalized bg-light w-100 px-0 mx-0"style="font-size: 15px;">
                                   <th class="text-start px-md-12 px-6 w-25">Ad Soyad</th>
                                   <th class="text-start px-md-12 px-6 w-25">E-posta</th>
                                   <th class="text-start px-md-12 px-6 w-25">Departman</th>
@@ -96,9 +97,9 @@
                                   <th class="text-end px-md-12 px-6 w-25">İşlemler</th>
                             </tr>
                         </thead>
-                        <tbody class="fw-semibold text-gray-600">
+                        <tbody class="fw-semibold text-gray-900">
 							 @foreach ($users as $user)
-								<tr>
+								<tr style="font-size: 13px;">
 								    <td class="text-start px-md-12 px-6 py-6">
 								       {{ str()->limit($user->name,50) }}
 								    </td>
@@ -111,7 +112,7 @@
                                         @endforeach
                                       </td>
                                        <td class="text-start px-md-12 px-6 py-6">
-                                           {{$user->roles->first()->name == 'admin' ? 'Yönetici' : ($user->roles->first()->name == 'personal' ? 'Personel' : '-')}}
+                                           {{$user->roles->first()->name == 'admin' ? 'Yönetici' : ($user->roles->first()->name == 'personel' ? 'Personel' : '-')}}
                                            {{-- {{$user->roles}} --}}
                                        </td>
 								    <td class="text-end px-md-12 px-6 py-4">
@@ -145,6 +146,7 @@
             </div>
         </div>
     </div>
+    @endrole
 </div>
 <div class="modal fade draggable" id="kt_modal_create_user" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered mw-650px">
@@ -224,13 +226,13 @@
                              <div class="invalid-feedback d-block text-danger f-11">{{$message}}</div>
                              @enderror
                          </div>
-                         <div class="fv-row mb-5">
+                         {{-- <div class="fv-row mb-5">
                              <label class="form-check form-check-custom form-control-lg bg-transparent me-10 fw-bold">
                                  <input class="form-check-input h-20px w-20px" @checked(old('admin')) type="checkbox" value="1" name="admin">
                                  <span class="form-check-label fw-bold fs-5">Kullanıcıyı Yönetici Yap
                                  </span>
                              </label>
-                         </div>
+                         </div> --}}
                     </div>
                 </div>
                 <div class="modal-footer flex-center py-5">
